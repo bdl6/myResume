@@ -1,0 +1,88 @@
+{
+  "personal": {
+    "name": "张三",
+    "title": "全栈开发工程师",
+    "avatar": "assets/images/avatar.jpg",
+    "intro": "热爱技术的全栈开发工程师，专注于Web应用开发和系统架构设计。拥有5年以上开发经验，擅长前后端技术栈，致力于构建高质量、高性能的应用系统。",
+    "contacts": {
+      "email": "zhangsan@example.com",
+      "github": "https://github.com/zhangsan",
+      "linkedin": "https://linkedin.com/in/zhangsan"
+    }
+  },
+  "education": [
+    {
+      "school": "清华大学",
+      "major": "计算机科学与技术",
+      "degree": "硕士",
+      "startDate": "2020-09",
+      "endDate": "2023-06",
+      "honors": ["优秀毕业生", "一等奖学金"]
+    },
+    {
+      "school": "北京大学",
+      "major": "软件工程",
+      "degree": "学士",
+      "startDate": "2016-09",
+      "endDate": "2020-06",
+      "honors": ["国家奖学金", "优秀学生干部", "ACM竞赛二等奖"]
+    },
+    {
+      "school": "示范高中",
+      "major": "理科",
+      "degree": "",
+      "startDate": "2013-09",
+      "endDate": "2016-06",
+      "honors": ["省级三好学生"]
+    }
+  ],
+  "skills": {
+    "前端开发": ["HTML5", "CSS3", "JavaScript", "React", "Vue.js", "TypeScript"],
+    "后端开发": ["Node.js", "Python", "Java", "MySQL", "MongoDB", "Redis"],
+    "开发工具": ["Git", "Docker", "VS Code", "Webpack", "Linux", "CI/CD"],
+    "其他技能": ["英语 (CET-6)", "团队协作", "敏捷开发", "UI/UX设计", "技术文档"]
+  },
+  "projects": [
+    {
+      "name": "电商平台系统",
+      "description": "一个功能完整的电商平台，包含商品管理、购物车、订单处理、支付集成等核心功能。采用微服务架构，支持高并发访问。",
+      "technologies": ["React", "Node.js", "MongoDB", "Redis", "Docker"],
+      "startDate": "2023-06",
+      "endDate": "2023-12",
+      "links": {
+        "demo": "https://demo.example.com",
+        "github": "https://github.com/username/project1"
+      },
+      "image": "assets/images/project1.jpg"
+    },
+    {
+      "name": "数据可视化平台",
+      "description": "企业级数据可视化分析平台，支持多种图表类型、实时数据更新、自定义仪表盘配置，帮助企业进行数据驱动决策。",
+      "technologies": ["Vue.js", "ECharts", "Python", "Flask", "PostgreSQL"],
+      "startDate": "2023-01",
+      "endDate": "2023-05",
+      "links": {
+        "demo": "https://demo.example.com",
+        "github": "https://github.com/username/project2"
+      },
+      "image": "assets/images/project2.jpg"
+    },
+    {
+      "name": "移动端社交应用",
+      "description": "基于React Native开发的跨平台社交应用，支持即时通讯、动态发布、好友管理等功能，提供流畅的用户体验。",
+      "technologies": ["React Native", "TypeScript", "Firebase", "WebSocket"],
+      "startDate": "2022-08",
+      "endDate": "2022-12",
+      "links": {
+        "demo": "https://demo.example.com",
+        "github": "https://github.com/username/project3"
+      },
+      "image": "assets/images/project3.jpg"
+    }
+  ],
+  "about": [
+    "我是一名充满热情的全栈开发工程师，拥有扎实的计算机科学基础和丰富的项目实践经验。在过去的几年中，我参与并主导了多个大型项目的开发，从需求分析到系统设计，再到代码实现和上线维护，积累了完整的项目开发经验。我善于学习新技术，能够快速适应不同的技术栈和开发环境。",
+    "在团队协作方面，我注重沟通与分享，乐于帮助团队成员解决技术难题。我相信优秀的代码不仅要实现功能，更要具有良好的可读性和可维护性。因此，我始终坚持编写清晰的代码注释，遵循最佳实践和设计模式，确保代码质量。",
+    "面对挑战时，我保持积极乐观的态度，善于分析问题本质并寻找最优解决方案。我热爱编程，享受将创意转化为现实的过程。未来，我希望能够在技术深度和广度上持续精进，为团队和产品创造更大的价值。"
+  ]
+}

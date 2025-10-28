@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF下载测试</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    
+    .test-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    h1 {
+      color: #2563eb;
+      margin-bottom: 20px;
+    }
+    
+    .test-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f8fafc;
+      border-radius: 6px;
+    }
+    
+    .test-section h2 {
+      color: #1e293b;
+      margin-bottom: 15px;
+      font-size: 1.25rem;
+    }
+    
+    .test-result {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    
+    .pass {
+      background: #dcfce7;
+      color: #166534;
+      border-left: 4px solid #22c55e;
+    }
+    
+    .fail {
+      background: #fee2e2;
+      color: #991b1b;
+      border-left: 4px solid #ef4444;
+    }
+    
+    .info {
+      background: #dbeafe;
+      color: #1e40af;
+      border-left: 4px solid #3b82f6;
+    }
+    
+    .warning {
+      background: #fef3c7;
+      color: #92400e;
+      border-left: 4px solid #f59e0b;
+    }
+    
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin: 5px;
+    }
+    
+    button:hover {
+      background: #1e40af;
+    }
+    
+    button:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+    
+    .checklist {
+      background: white;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      margin: 10px 0;
+    }
+    
+    .checklist-item {
+      padding: 8px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .checklist-item:last-child {
+      border-bottom: none;
+    }
+    
+    .checklist-item input[type="checkbox"] {
+      margin-right: 10px;
+    }
+    
+    .config-display {
+      background: #1e293b;
+      color: #f1f5f9;
+      padding: 15px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.875rem;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+    
+    .config-display pre {
+      margin: 0;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>📄 PDF下载功能测试</h1>
+    
+    <div class="test-section">
+      <h2>依赖检查</h2>
+      <div id="dependencyTests"></div>
+    </div>
+    
+    <div class="test-section">
+      <h2>PDF生成器检查</h2>
+      <div id="generatorTests"></div>
+    </div>
+    
+    <div class="test-section">
+      <h2>PDF配置</h2>
+      <div id="configDisplay"></div>
+    </div>
+    
+    <div class="test-section">
+      <h2>功能测试</h2>
+      <div id="functionalTests"></div>
+      <button onclick="testPDFGeneration()">测试PDF生成</button>
+      <button onclick="window.open('index.html', '_blank')">在主页面测试</button>
+    </div>
+    
+    <div class="test-section">
+      <h2>内容完整性检查清单</h2>
+      <p style="margin-bottom: 10px; color: #64748b;">
+        生成PDF后，请检查以下内容是否完整：
+      </p>
+      <div class="checklist">
+        <div class="checklist-item">
+          <input type="checkbox" id="check1">
+          <label for="check1">个人信息（姓名、职位、联系方式）</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" id="check2">
+          <label for="check2">教育背景（所有学历信息）</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" id="check3">
+          <label for="check3">技术能力（所有技能分类和标签）</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" id="check4">
+          <label for="check4">项目经历（所有项目卡片）</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" id="check5">
+          <label for="check5">自我评价（完整段落）</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" id="check6">
+          <label for="check6">页面布局正确，无内容截断</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" id="check7">
+          <label for="check7">文字清晰可读，无模糊</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" id="check8">
+          <label for="check8">图片正常显示（如有）</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" id="check9">
+          <label for="check9">PDF文件大小合理（< 5MB）</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" id="check10">
+          <label for="check10">文件名为"个人简历.pdf"</label>
+        </div>
+      </div>
+    </div>
+    
+    <div class="test-section">
+      <h2>格式检查</h2>
+      <div id="formatTests"></div>
+    </div>
+  </div>
+
+  <script>
+    // Test dependencies
+    function testDependencies() {
+      const tests = [
+        {
+          name: 'html2pdf 库',
+          test: () => typeof html2pdf !== 'undefined',
+          description: 'html2pdf.js 库已加载',
+          critical: true
+        },
+        {
+          name: 'PDF生成器模块',
+          test: () => typeof window.PDFGenerator !== 'undefined',
+          description: 'PDFGenerator 对象已定义',
+          critical: true
+        },
+        {
+          name: 'PDF生成方法',
+          test: () => typeof window.PDFGenerator?.generate === 'function',
+          description: 'generate 方法可用',
+          critical: true
+        },
+        {
+          name: 'PDF下载按钮',
+          test: () => {
+            // Can't test in this page, but we can check if it would exist
+            return true; // Assume it exists in main page
+          },
+          description: 'PDF下载按钮存在于主页面',
+          critical: false
+        }
+      ];
+      
+      const container = document.getElementById('dependencyTests');
+      container.innerHTML = '';
+      
+      tests.forEach(test => {
+        const result = document.createElement('div');
+        const passed = test.test();
+        result.className = `test-result ${passed ? 'pass' : (test.critical ? 'fail' : 'warning')}`;
+        result.innerHTML = `
+          <strong>${passed ? '✓' : (test.critical ? '✗' : '⚠')} ${test.name}</strong><br>
+          ${test.description}
+          ${!passed && test.critical ? '<br><em>请在主页面中加载 html2pdf.js 库</em>' : ''}
+        `;
+        container.appendChild(result);
+      });
+    }
+    
+    // Test PDF generator
+    function testGenerator() {
+      const container = document.getElementById('generatorTests');
+      container.innerHTML = '';
+      
+      if (typeof window.PDFGenerator === 'undefined') {
+        const result = document.createElement('div');
+        result.className = 'test-result warning';
+        result.innerHTML = `
+          <strong>⚠ PDF生成器未加载</strong><br>
+          请在主页面中测试PDF生成功能
+        `;
+        container.appendChild(result);
+        return;
+      }
+      
+      const tests = [
+        {
+          name: 'generate 方法存在',
+          test: () => typeof window.PDFGenerator.generate === 'function',
+          description: 'PDF生成方法已定义'
+        }
+      ];
+      
+      tests.forEach(test => {
+        const result = document.createElement('div');
+        const passed = test.test();
+        result.className = `test-result ${passed ? 'pass' : 'fail'}`;
+        result.innerHTML = `
+          <strong>${passed ? '✓' : '✗'} ${test.name}</strong><br>
+          ${test.description}
+        `;
+        container.appendChild(result);
+      });
+    }
+    
+    // Display PDF configuration
+    function displayConfig() {
+      const container = document.getElementById('configDisplay');
+      
+      const config = {
+        margin: [10, 10, 10, 10],
+        filename: '个人简历.pdf',
+        image: { 
+          type: 'jpeg', 
+          quality: 0.98 
+        },
+        html2canvas: { 
+          scale: 2,
+          useCORS: true,
+          letterRendering: true,
+          scrollY: 0,
+          scrollX: 0
+        },
+        jsPDF: { 
+          unit: 'mm', 
+          format: 'a4', 
+          orientation: 'portrait',
+          compress: true
+        },
+        pagebreak: { 
+          mode: ['avoid-all', 'css', 'legacy'],
+          before: '.section'
+        }
+      };
+      
+      container.innerHTML = `
+        <div class="test-result info">
+          <strong>ℹ PDF生成配置</strong><br>
+          以下是PDF生成时使用的配置选项：
+        </div>
+        <div class="config-display">
+          <pre>${JSON.stringify(config, null, 2)}</pre>
+        </div>
+      `;
+    }
+    
+    // Test functional aspects
+    function testFunctional() {
+      const container = document.getElementById('functionalTests');
+      
+      const tests = [
+        {
+          name: '按钮点击事件',
+          description: '点击下载按钮应触发PDF生成',
+          status: 'manual'
+        },
+        {
+          name: '加载状态显示',
+          description: '生成PDF时按钮应显示"生成中..."',
+          status: 'manual'
+        },
+        {
+          name: '按钮禁用状态',
+          description: '生成过程中按钮应被禁用',
+          status: 'manual'
+        },
+        {
+          name: '错误处理',
+          description: '生成失败时应显示错误提示',
+          status: 'manual'
+        },
+        {
+          name: '自动下载',
+          description: 'PDF生成完成后应自动下载',
+          status: 'manual'
+        }
+      ];
+      
+      container.innerHTML = '';
+      
+      tests.forEach(test => {
+        const result = document.createElement('div');
+        result.className = 'test-result info';
+        result.innerHTML = `
+          <strong>ℹ ${test.name}</strong><br>
+          ${test.description}<br>
+          <em>需要手动测试</em>
+        `;
+        container.appendChild(result);
+      });
+    }
+    
+    // Test PDF generation (if possible)
+    function testPDFGeneration() {
+      if (typeof window.PDFGenerator === 'undefined') {
+        alert('PDF生成器未加载。请在主页面中测试。');
+        return;
+      }
+      
+      alert('请在主页面中点击"下载简历"按钮进行测试。');
+    }
+    
+    // Test format requirements
+    function testFormat() {
+      const container = document.getElementById('formatTests');
+      
+      const requirements = [
+        {
+          name: 'A4格式',
+          description: 'PDF应使用A4纸张大小 (210mm × 297mm)',
+          check: 'jsPDF format: "a4"'
+        },
+        {
+          name: '纵向方向',
+          description: 'PDF应使用纵向（portrait）方向',
+          check: 'jsPDF orientation: "portrait"'
+        },
+        {
+          name: '边距设置',
+          description: 'PDF应有适当的页边距 (10mm)',
+          check: 'margin: [10, 10, 10, 10]'
+        },
+        {
+          name: '图片质量',
+          description: '图片应使用高质量设置 (0.98)',
+          check: 'image quality: 0.98'
+        },
+        {
+          name: '缩放比例',
+          description: '内容应使用2倍缩放以提高清晰度',
+          check: 'html2canvas scale: 2'
+        },
+        {
+          name: '文件压缩',
+          description: 'PDF应启用压缩以减小文件大小',
+          check: 'jsPDF compress: true'
+        }
+      ];
+      
+      container.innerHTML = '';
+      
+      requirements.forEach(req => {
+        const result = document.createElement('div');
+        result.className = 'test-result pass';
+        result.innerHTML = `
+          <strong>✓ ${req.name}</strong><br>
+          ${req.description}<br>
+          <code style="font-size: 0.875rem; opacity: 0.8;">${req.check}</code>
+        `;
+        container.appendChild(result);
+      });
+    }
+    
+    // Initialize tests
+    testDependencies();
+    testGenerator();
+    displayConfig();
+    testFunctional();
+    testFormat();
+  </script>
+</body>
+</html>

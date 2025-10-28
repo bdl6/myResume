@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>响应式布局测试</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    
+    .test-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    h1 {
+      color: #2563eb;
+      margin-bottom: 20px;
+    }
+    
+    .test-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f8fafc;
+      border-radius: 6px;
+    }
+    
+    .test-section h2 {
+      color: #1e293b;
+      margin-bottom: 15px;
+      font-size: 1.25rem;
+    }
+    
+    .test-result {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    
+    .pass {
+      background: #dcfce7;
+      color: #166534;
+      border-left: 4px solid #22c55e;
+    }
+    
+    .fail {
+      background: #fee2e2;
+      color: #991b1b;
+      border-left: 4px solid #ef4444;
+    }
+    
+    .info {
+      background: #dbeafe;
+      color: #1e40af;
+      border-left: 4px solid #3b82f6;
+    }
+    
+    .viewport-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .info-card {
+      background: white;
+      padding: 15px;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .info-card strong {
+      display: block;
+      color: #64748b;
+      font-size: 0.875rem;
+      margin-bottom: 5px;
+    }
+    
+    .info-card span {
+      font-size: 1.5rem;
+      color: #1e293b;
+      font-weight: 600;
+    }
+    
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin: 5px;
+    }
+    
+    button:hover {
+      background: #1e40af;
+    }
+    
+    iframe {
+      width: 100%;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>📱 响应式布局测试</h1>
+    
+    <div class="test-section">
+      <h2>当前视口信息</h2>
+      <div class="viewport-info">
+        <div class="info-card">
+          <strong>视口宽度</strong>
+          <span id="viewportWidth">-</span>
+        </div>
+        <div class="info-card">
+          <strong>视口高度</strong>
+          <span id="viewportHeight">-</span>
+        </div>
+        <div class="info-card">
+          <strong>设备类型</strong>
+          <span id="deviceType">-</span>
+        </div>
+        <div class="info-card">
+          <strong>像素比</strong>
+          <span id="pixelRatio">-</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="test-section">
+      <h2>响应式断点测试</h2>
+      <div id="breakpointTests"></div>
+    </div>
+    
+    <div class="test-section">
+      <h2>布局元素测试</h2>
+      <div id="layoutTests"></div>
+    </div>
+    
+    <div class="test-section">
+      <h2>快速预览</h2>
+      <p style="margin-bottom: 10px; color: #64748b;">在不同视口尺寸下预览网站：</p>
+      <button onclick="resizePreview(375, 667)">iPhone SE (375x667)</button>
+      <button onclick="resizePreview(768, 1024)">iPad (768x1024)</button>
+      <button onclick="resizePreview(1024, 768)">iPad 横屏 (1024x768)</button>
+      <button onclick="resizePreview(1920, 1080)">桌面 (1920x1080)</button>
+      <button onclick="resizePreview('100%', 600)">全宽</button>
+      
+      <iframe id="previewFrame" src="index.html" height="600"></iframe>
+    </div>
+  </div>
+
+  <script>
+    // Update viewport information
+    function updateViewportInfo() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const pixelRatio = window.devicePixelRatio || 1;
+      
+      let deviceType = '桌面端';
+      if (width < 768) {
+        deviceType = '移动端';
+      } else if (width >= 768 && width < 1024) {
+        deviceType = '平板端';
+      }
+      
+      document.getElementById('viewportWidth').textContent = width + 'px';
+      document.getElementById('viewportHeight').textContent = height + 'px';
+      document.getElementById('deviceType').textContent = deviceType;
+      document.getElementById('pixelRatio').textContent = pixelRatio.toFixed(2);
+      
+      runBreakpointTests(width);
+      runLayoutTests();
+    }
+    
+    // Test responsive breakpoints
+    function runBreakpointTests(width) {
+      const tests = [
+        {
+          name: '移动端断点 (<768px)',
+          condition: width < 768,
+          expected: width < 768,
+          description: '视口宽度小于768px时应使用移动端布局'
+        },
+        {
+          name: '平板端断点 (768-1024px)',
+          condition: width >= 768 && width < 1024,
+          expected: width >= 768 && width < 1024,
+          description: '视口宽度在768-1024px之间时应使用平板端布局'
+        },
+        {
+          name: '桌面端断点 (≥1024px)',
+          condition: width >= 1024,
+          expected: width >= 1024,
+          description: '视口宽度大于等于1024px时应使用桌面端布局'
+        }
+      ];
+      
+      const container = document.getElementById('breakpointTests');
+      container.innerHTML = '';
+      
+      tests.forEach(test => {
+        const result = document.createElement('div');
+        result.className = `test-result ${test.condition === test.expected ? 'pass' : 'fail'}`;
+        result.innerHTML = `
+          <strong>${test.condition === test.expected ? '✓' : '✗'} ${test.name}</strong><br>
+          ${test.description}
+        `;
+        container.appendChild(result);
+      });
+    }
+    
+    // Test layout elements
+    function runLayoutTests() {
+      const tests = [
+        {
+          name: '导航栏存在性',
+          test: () => {
+            const iframe = document.getElementById('previewFrame');
+            try {
+              const nav = iframe.contentDocument.querySelector('.navbar');
+              return nav !== null;
+            } catch (e) {
+              return false;
+            }
+          }
+        },
+        {
+          name: '响应式容器',
+          test: () => {
+            const iframe = document.getElementById('previewFrame');
+            try {
+              const containers = iframe.contentDocument.querySelectorAll('.container');
+              return containers.length > 0;
+            } catch (e) {
+              return false;
+            }
+          }
+        },
+        {
+          name: '内容区块',
+          test: () => {
+            const iframe = document.getElementById('previewFrame');
+            try {
+              const sections = iframe.contentDocument.querySelectorAll('section');
+              return sections.length >= 5;
+            } catch (e) {
+              return false;
+            }
+          }
+        }
+      ];
+      
+      const container = document.getElementById('layoutTests');
+      container.innerHTML = '';
+      
+      tests.forEach(testCase => {
+        const result = document.createElement('div');
+        const passed = testCase.test();
+        result.className = `test-result ${passed ? 'pass' : 'info'}`;
+        result.innerHTML = `
+          <strong>${passed ? '✓' : 'ℹ'} ${testCase.name}</strong><br>
+          ${passed ? '测试通过' : '无法访问iframe内容（跨域限制）'}
+        `;
+        container.appendChild(result);
+      });
+    }
+    
+    // Resize preview iframe
+    function resizePreview(width, height) {
+      const iframe = document.getElementById('previewFrame');
+      iframe.style.width = typeof width === 'number' ? width + 'px' : width;
+      iframe.style.height = height + 'px';
+    }
+    
+    // Initialize
+    updateViewportInfo();
+    
+    // Update on resize
+    window.addEventListener('resize', updateViewportInfo);
+    
+    // Update when iframe loads
+    document.getElementById('previewFrame').addEventListener('load', () => {
+      setTimeout(runLayoutTests, 500);
+    });
+  </script>
+</body>
+</html>

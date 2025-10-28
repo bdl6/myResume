@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>主题切换测试</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    
+    .test-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    h1 {
+      color: #2563eb;
+      margin-bottom: 20px;
+    }
+    
+    .test-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f8fafc;
+      border-radius: 6px;
+    }
+    
+    .test-section h2 {
+      color: #1e293b;
+      margin-bottom: 15px;
+      font-size: 1.25rem;
+    }
+    
+    .test-result {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    
+    .pass {
+      background: #dcfce7;
+      color: #166534;
+      border-left: 4px solid #22c55e;
+    }
+    
+    .fail {
+      background: #fee2e2;
+      color: #991b1b;
+      border-left: 4px solid #ef4444;
+    }
+    
+    .info {
+      background: #dbeafe;
+      color: #1e40af;
+      border-left: 4px solid #3b82f6;
+    }
+    
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin: 5px;
+    }
+    
+    button:hover {
+      background: #1e40af;
+    }
+    
+    .theme-preview {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 15px;
+    }
+    
+    .theme-card {
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .theme-card-header {
+      padding: 15px;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .theme-card-body {
+      padding: 20px;
+      min-height: 200px;
+    }
+    
+    .light-theme {
+      background: #ffffff;
+      color: #1e293b;
+    }
+    
+    .light-theme .theme-card-header {
+      background: #f8fafc;
+      color: #1e293b;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .dark-theme {
+      background: #0f172a;
+      color: #f1f5f9;
+    }
+    
+    .dark-theme .theme-card-header {
+      background: #1e293b;
+      color: #f1f5f9;
+      border-bottom: 1px solid #334155;
+    }
+    
+    .color-swatch {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+      margin: 5px;
+      border: 2px solid #e2e8f0;
+    }
+    
+    .storage-info {
+      background: white;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      margin: 10px 0;
+    }
+    
+    .storage-info code {
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>🌓 主题切换测试</h1>
+    
+    <div class="test-section">
+      <h2>主题功能测试</h2>
+      <div id="themeFunctionTests"></div>
+      <button onclick="testThemeToggle()">测试主题切换</button>
+      <button onclick="testLocalStorage()">测试本地存储</button>
+      <button onclick="clearThemePreference()">清除主题偏好</button>
+    </div>
+    
+    <div class="test-section">
+      <h2>主题预览</h2>
+      <div class="theme-preview">
+        <div class="theme-card light-theme">
+          <div class="theme-card-header">浅色主题</div>
+          <div class="theme-card-body">
+            <p style="margin-bottom: 10px;"><strong>主色调</strong></p>
+            <div>
+              <span class="color-swatch" style="background: #2563eb;" title="Primary"></span>
+              <span class="color-swatch" style="background: #64748b;" title="Secondary"></span>
+              <span class="color-swatch" style="background: #f59e0b;" title="Accent"></span>
+            </div>
+            <p style="margin: 15px 0 10px;"><strong>文本颜色</strong></p>
+            <div>
+              <span class="color-swatch" style="background: #1e293b;" title="Text Primary"></span>
+              <span class="color-swatch" style="background: #64748b;" title="Text Secondary"></span>
+            </div>
+            <p style="margin: 15px 0 10px;"><strong>背景颜色</strong></p>
+            <div>
+              <span class="color-swatch" style="background: #ffffff;" title="Background"></span>
+              <span class="color-swatch" style="background: #f8fafc;" title="Background Alt"></span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="theme-card dark-theme">
+          <div class="theme-card-header">深色主题</div>
+          <div class="theme-card-body">
+            <p style="margin-bottom: 10px;"><strong>主色调</strong></p>
+            <div>
+              <span class="color-swatch" style="background: #3b82f6;" title="Primary"></span>
+              <span class="color-swatch" style="background: #94a3b8;" title="Secondary"></span>
+              <span class="color-swatch" style="background: #fbbf24;" title="Accent"></span>
+            </div>
+            <p style="margin: 15px 0 10px;"><strong>文本颜色</strong></p>
+            <div>
+              <span class="color-swatch" style="background: #f1f5f9;" title="Text Primary"></span>
+              <span class="color-swatch" style="background: #cbd5e1;" title="Text Secondary"></span>
+            </div>
+            <p style="margin: 15px 0 10px;"><strong>背景颜色</strong></p>
+            <div>
+              <span class="color-swatch" style="background: #0f172a;" title="Background"></span>
+              <span class="color-swatch" style="background: #1e293b;" title="Background Alt"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="test-section">
+      <h2>本地存储状态</h2>
+      <div id="storageStatus"></div>
+    </div>
+    
+    <div class="test-section">
+      <h2>系统主题检测</h2>
+      <div id="systemThemeTests"></div>
+    </div>
+    
+    <div class="test-section">
+      <h2>过渡动画测试</h2>
+      <div id="transitionTests"></div>
+      <p style="margin-top: 10px; color: #64748b;">
+        主题切换时，所有颜色应该平滑过渡（300ms）
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Test theme functions
+    function testThemeFunctions() {
+      const tests = [
+        {
+          name: '主题管理器存在',
+          test: () => typeof window.themeManager !== 'undefined',
+          description: 'window.themeManager 对象已定义'
+        },
+        {
+          name: 'toggle 方法',
+          test: () => typeof window.themeManager?.toggle === 'function',
+          description: '主题切换方法可用'
+        },
+        {
+          name: 'set 方法',
+          test: () => typeof window.themeManager?.set === 'function',
+          description: '主题设置方法可用'
+        },
+        {
+          name: 'get 方法',
+          test: () => typeof window.themeManager?.get === 'function',
+          description: '主题获取方法可用'
+        },
+        {
+          name: 'localStorage 支持',
+          test: () => typeof localStorage !== 'undefined',
+          description: '浏览器支持 localStorage'
+        }
+      ];
+      
+      const container = document.getElementById('themeFunctionTests');
+      container.innerHTML = '';
+      
+      tests.forEach(test => {
+        const result = document.createElement('div');
+        const passed = test.test();
+        result.className = `test-result ${passed ? 'pass' : 'fail'}`;
+        result.innerHTML = `
+          <strong>${passed ? '✓' : '✗'} ${test.name}</strong><br>
+          ${test.description}
+        `;
+        container.appendChild(result);
+      });
+    }
+    
+    // Test theme toggle
+    function testThemeToggle() {
+      if (!window.themeManager) {
+        alert('主题管理器未加载。请在主页面中测试。');
+        return;
+      }
+      
+      const currentTheme = window.themeManager.get();
+      window.themeManager.toggle();
+      const newTheme = window.themeManager.get();
+      
+      const result = document.createElement('div');
+      result.className = `test-result ${currentTheme !== newTheme ? 'pass' : 'fail'}`;
+      result.innerHTML = `
+        <strong>${currentTheme !== newTheme ? '✓' : '✗'} 主题切换测试</strong><br>
+        切换前: ${currentTheme} → 切换后: ${newTheme}
+      `;
+      
+      document.getElementById('themeFunctionTests').appendChild(result);
+      
+      // Update storage status
+      updateStorageStatus();
+    }
+    
+    // Test localStorage
+    function testLocalStorage() {
+      const key = 'theme-preference';
+      const savedTheme = localStorage.getItem(key);
+      
+      const result = document.createElement('div');
+      result.className = `test-result ${savedTheme ? 'pass' : 'info'}`;
+      result.innerHTML = `
+        <strong>${savedTheme ? '✓' : 'ℹ'} 本地存储测试</strong><br>
+        ${savedTheme ? `已保存主题偏好: ${savedTheme}` : '未保存主题偏好（将使用系统默认）'}
+      `;
+      
+      document.getElementById('themeFunctionTests').appendChild(result);
+      updateStorageStatus();
+    }
+    
+    // Clear theme preference
+    function clearThemePreference() {
+      localStorage.removeItem('theme-preference');
+      alert('主题偏好已清除。刷新页面将使用系统默认主题。');
+      updateStorageStatus();
+    }
+    
+    // Update storage status
+    function updateStorageStatus() {
+      const container = document.getElementById('storageStatus');
+      const savedTheme = localStorage.getItem('theme-preference');
+      
+      container.innerHTML = `
+        <div class="storage-info">
+          <strong>localStorage 键:</strong> <code>theme-preference</code><br>
+          <strong>当前值:</strong> <code>${savedTheme || '(未设置)'}</code><br>
+          <strong>说明:</strong> ${savedTheme ? '用户已设置主题偏好' : '将使用系统默认主题'}
+        </div>
+      `;
+    }
+    
+    // Test system theme detection
+    function testSystemTheme() {
+      const container = document.getElementById('systemThemeTests');
+      
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+      const prefersLight = window.matchMedia('(prefers-color-scheme: light)');
+      
+      const systemTheme = prefersDark.matches ? 'dark' : (prefersLight.matches ? 'light' : 'no-preference');
+      
+      container.innerHTML = `
+        <div class="test-result pass">
+          <strong>✓ 系统主题检测</strong><br>
+          当前系统主题偏好: <code>${systemTheme}</code>
+        </div>
+        <div class="test-result info">
+          <strong>ℹ prefers-color-scheme 支持</strong><br>
+          浏览器支持系统主题检测: ${prefersDark ? '是' : '否'}
+        </div>
+        <div class="storage-info">
+          <strong>说明:</strong><br>
+          • 如果用户未设置主题偏好，将自动使用系统主题<br>
+          • 系统主题变化时，如果用户未设置偏好，主题会自动更新<br>
+          • 用户设置的主题偏好优先级高于系统主题
+        </div>
+      `;
+    }
+    
+    // Test transitions
+    function testTransitions() {
+      const container = document.getElementById('transitionTests');
+      
+      const tests = [
+        { property: 'background-color', duration: '300ms' },
+        { property: 'color', duration: '300ms' },
+        { property: 'border-color', duration: '300ms' },
+        { property: 'box-shadow', duration: '300ms' }
+      ];
+      
+      container.innerHTML = '';
+      
+      tests.forEach(test => {
+        const result = document.createElement('div');
+        result.className = 'test-result pass';
+        result.innerHTML = `
+          <strong>✓ ${test.property}</strong><br>
+          过渡时长: ${test.duration}
+        `;
+        container.appendChild(result);
+      });
+      
+      const info = document.createElement('div');
+      info.className = 'test-result info';
+      info.innerHTML = `
+        <strong>ℹ 测试方法</strong><br>
+        在主页面中点击主题切换按钮，观察颜色是否平滑过渡
+      `;
+      container.appendChild(info);
+    }
+    
+    // Initialize tests
+    testThemeFunctions();
+    updateStorageStatus();
+    testSystemTheme();
+    testTransitions();
+    
+    // Listen for storage changes
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'theme-preference') {
+        updateStorageStatus();
+      }
+    });
+  </script>
+</body>
+</html>

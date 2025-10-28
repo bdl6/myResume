@@ -1,0 +1,11 @@
+# robots.txt for Personal Resume Website
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://yourwebsite.com/sitemap.xml
+
+# Disallow specific paths (if any)
+# Disallow: /private/
+# Disallow: /temp/
